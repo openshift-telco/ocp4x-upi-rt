@@ -125,7 +125,7 @@ EOL
 
     sed -i '/^.*linux16.*/ s/$/ ip=${PRIMARY_NIC}:dhcp rd.neednet=1/' /boot/grub2/grub.cfg
 
-    curl -J -L -o /tmp/runignition.sh ${SCRIPT_SERVER}/podman_service.sh
+    curl -J -L -o /tmp/runignition.sh ${SCRIPT_SERVER}/runignition.sh
     chmod a+x /tmp/runignition.sh
     touch /tmp/runonce
 }

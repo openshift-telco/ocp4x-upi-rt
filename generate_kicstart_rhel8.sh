@@ -25,7 +25,7 @@ firstboot --disable
 sshkey --username=core "${SSH_KEY}"
 %post --interpreter=/bin/bash
 # Get OCP Node Customizatons
-curl -s ${PXE_WEB_SERVER}/rhel8rt-scripts.sh | bash /dev/stdin enable_proxy
+curl -s ${KS_POST_SCRIP} | bash /dev/stdin enable_proxy
 %end
 %packages
 @standard
