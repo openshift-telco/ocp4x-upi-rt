@@ -55,14 +55,14 @@ The purpose of this repo is to describe the enroll of RHEL and RHEL-RT nodes on 
 
 - Copy `rhel8-worker-ks.cfg` to the HTTP directory
     ```
-    cp -r rhel8-worker-ks.cfg /opt/nginx/html
+    cp ./rhel8-worker-ks.cfg /opt/nginx/html
     ```
 
 - Update PXE boot and point to the Kickstart file in the web server
 - Boot the worker and wait for the install to complete
 - Accept node CSRs
 
-## Credits
+# Credits
 This is heavily based on original work by Yolanda Robla:
 - [https://github.com/redhat-nfvpe/upi-rt](https://github.com/redhat-nfvpe/upi-rt)
 
