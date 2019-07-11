@@ -24,8 +24,9 @@ swapoff -a
 sysctl -w net.ipv4.ip_forward=1
 sysctl --system
 
-# set sebool container_manage_cgroup, disable selinux
+# set sebool container_manage_cgroup to run systemd inside a container
 setsebool -P container_manage_cgroup on || true
+# disable selinux
 setenforce 0
 
 # create temporary directory and extract contents there
