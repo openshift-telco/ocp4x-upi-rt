@@ -1,20 +1,71 @@
 # Add real time kernel workers with OCP 4.x and UPI
 
-The purpose of this repo is to describe the enroll of CentOS-RT nodes on an existing OCP 4.x cluster based on baremetal (using UPI workflow)
+The purpose of this repo is to describe the enroll of RHEL and RHEL-RT nodes on an existing OCP 4.x cluster based on baremetal (using UPI workflow)
 
 ## Introduction
-This procedure is based on the baremetal instructions for OCP 4.1 : [https://docs.openshift.com/container-platform/4.1/installing/installing_bare_metal/installing-bare-metal.html](https://docs.openshift.com/container-platform/4.1/installing/installing_bare_metal/installing-bare-metal.html) . What is shown here is an implementation of those instructions based on matchbox for PXE and terraform for automation.
 
-## How does it work
-[Pre-requisites](https://github.com/redhat-nfvpe/upi-rt/tree/master/prerequisites)
+- Copy the content of RHEL8 into HTTP directory
 
-[Initial cluster deployment](https://github.com/redhat-nfvpe/upi-rt/tree/master/terraform/cluster)
+    ```
+    mkdir -pv /opt/nginx/html/rhel8
+    mkdir /tmp/rhel8
+    mount -o loop,ro /root/rhel-8.0-x86_64-dvd.iso /tmp/rhel8
+    cp -a /tmp/rhel8/. /opt/nginx/html/rhel8/
+    umount /tmp/rhel8
+    chcon -R system_u:object_r:httpd_sys_content_t:s0 /opt/nginx/html/rhel8/
+    ```
+    Test content is reachable
 
-[Kickstart generation](https://github.com/redhat-nfvpe/upi-rt/tree/master/kickstart)
+    ```
+    curl http://198.18.100.1:8000/rhel8/GPL 
+    ```
 
-[Enroll worker](https://github.com/redhat-nfvpe/upi-rt/tree/master/terraform/workers)
+
+- (Optional: If doing RHEL-RT) Copy the content of RHEL8 into HTTP directory
+
+    ```
+    mkdir -pv /opt/nginx/html/rhel8rt
+    mkdir /tmp/rhel8rt
+    mount -o loop,ro /root/rhel-8.0-x86_64-dvd-rt.iso /tmp/rhel8rt 
+    cp -a /tmp/rhel8rt/. /opt/nginx/html/rhel8rt/
+    umount /tmp/rhel8rt
+    chcon -R system_u:object_r:httpd_sys_content_t:s0 /opt/nginx/html/rhel8rt/
+    ```
+    Test content is reachable
+
+    ```
+    curl http://198.18.100.1:8000/rhel8rt/GPL 
+    ```
+
+- Configure [`settings_upi.env`](scripts/settings_upi.env-UPDATETHIS) to match the environment
+
+- Update `SCRIPT_SERVER=` variable in script [`./scripts/rhel-worker.sh`](scripts/rhel-worker.sh) to point to the web server
+
+- Copy `./scripts` folder to the HTTP directory
+
+    ```
+    cp -r ./scripts /opt/nginx/html
+    ```
+- Generate Kickstart file for RHEL Nodes.
+
+    ```
+    ./generate_kickstart_rhel8.sh
+    ```
+    This will generate a `rhel8-worker-ks.cfg`
+
+- Copy `rhel8-worker-ks.cfg` to the HTTP directory
+    ```
+    cp -r rhel8-worker-ks.cfg /opt/nginx/html
+    ```
+
+- Update PXE boot and point to the Kickstart file in the web server
+- Boot the worker and wait for the install to complete
+- Accept node CSRs
 
 ## Credits
-This is heavily based on:
-[https://github.com/e-minguez/ocp4-upi-bm-pxeless-staticips](https://github.com/e-minguez/ocp4-upi-bm-pxeless-staticips)
-[https://github.com/openshift/installer/tree/master/upi/metal](https://github.com/openshift/installer/tree/master/upi/metal)
+This is heavily based on original work by Yolanda Robla:
+- [https://github.com/redhat-nfvpe/upi-rt](https://github.com/redhat-nfvpe/upi-rt)
+
+Special thanks to:
+- Puneet Marhatha
+- Jay Cromer

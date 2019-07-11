@@ -1,5 +1,4 @@
 #! /bin/bash
-
 ##############################################################
 # UPDATE TO MATCH YOUR ENVIRONMENT
 ##############################################################
@@ -123,7 +122,7 @@ EOL
     systemctl daemon-reload 
     systemctl enable runignition
 
-    sed -i '/^.*linux16.*/ s/$/ ip=${PRIMARY_NIC}:dhcp rd.neednet=1/' /boot/grub2/grub.cfg
+    sed -i '/^.*linux16.*/ s/$/ ip=${RHEL_PRIMARY_NIC}:dhcp rd.neednet=1/' /boot/grub2/grub.cfg
 
     curl -J -L -o /tmp/runignition.sh ${SCRIPT_SERVER}/runignition.sh
     chmod a+x /tmp/runignition.sh
@@ -190,6 +189,6 @@ add_rt_kernel
 #
 ssh_hardening
 
-#
+##############################################################
 # END OF FILE
-#
+##############################################################

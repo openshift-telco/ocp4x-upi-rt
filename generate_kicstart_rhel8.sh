@@ -1,10 +1,10 @@
 #! /bin/bash
 
-source ./settings_upi.env
+source ./scripts/settings_upi.env
 
 ENC_ROOT_PASSSWORD = `python -c "import crypt; print(crypt.crypt('${ROOT_PASSWORD}', '\$1\$9zqQvtSY\$'))"`
 
-cat > rhel8-rt-worker-ks.cfg <<EOT
+cat > rhel8-worker-ks.cfg <<EOT
 lang en_US
 keyboard us
 timezone America/New_York --isUtc
@@ -25,7 +25,7 @@ firstboot --disable
 sshkey --username=core "${SSH_KEY}"
 %post --interpreter=/bin/bash
 # Get OCP Node Customizatons
-curl -s ${KS_POST_SCRIP} | bash /dev/stdin enable_proxy
+curl -s ${KS_POST_SCRIP} | bash /dev/stdin ${KS_POST_SCRIPT_OPTIONS}
 %end
 %packages
 @standard
