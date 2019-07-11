@@ -25,7 +25,7 @@ firstboot --disable
 sshkey --username=core "${SSH_KEY}"
 %post --interpreter=/bin/bash
 # Get OCP Node Customizatons
-curl -s ${KS_POST_SCRIP} | bash /dev/stdin ${KS_POST_SCRIPT_OPTIONS}
+curl -s ${KS_POST_SCRIPT} | bash /dev/stdin ${KS_POST_SCRIPT_OPTIONS}
 %end
 %packages
 @standard

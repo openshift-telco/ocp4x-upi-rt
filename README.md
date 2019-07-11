@@ -36,6 +36,19 @@ The purpose of this repo is to describe the enroll of RHEL and RHEL-RT nodes on 
     ```
     curl http://198.18.100.1:8000/rhel8rt/GPL 
     ```
+- Prepare RHEL PXE boot environment
+    ```
+    mkdir -pv /var/lib/tftpboot/rhel8
+    cp /opt/nginx/html/rhel8/images/pxeboot/{vmlinuz,initrd.img} /var/lib/tftpboot/rhel8
+    ```
+    Update `/var/lib/tftpboot/pxelinux.cfg/default`
+
+    ```
+    LABEL WORKER-RHEL
+    MENU LABEL ^RHEL WORKER (BIOS)
+    KERNEL rhel8/vmlinuz
+    append initrd=rhel8/initrd.img ip=eth0:dhcp inst.repo=http://198.18.100.1:8000/rhel8/
+    ```
 
 - Configure [`settings_upi.env`](scripts/settings_upi.env-UPDATETHIS) to match the environment
 
