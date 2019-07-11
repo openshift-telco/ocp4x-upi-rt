@@ -13,8 +13,9 @@ The purpose of this repo is to describe the enroll of RHEL and RHEL-RT nodes on 
     cp -a /tmp/rhel8/. /opt/nginx/html/rhel8/
     umount /tmp/rhel8
     chcon -R system_u:object_r:httpd_sys_content_t:s0 /opt/nginx/html/rhel8/
+    #chmod -R 755 /opt/nginx/html/rhel8
     ```
-    Test content is reachable
+    Test content is reachable:
 
     ```
     curl http://198.18.100.1:8000/rhel8/GPL 
@@ -30,8 +31,9 @@ The purpose of this repo is to describe the enroll of RHEL and RHEL-RT nodes on 
     cp -a /tmp/rhel8rt/. /opt/nginx/html/rhel8rt/
     umount /tmp/rhel8rt
     chcon -R system_u:object_r:httpd_sys_content_t:s0 /opt/nginx/html/rhel8rt/
+    #chmod -R 755 /opt/nginx/html/rhel8rt
     ```
-    Test content is reachable
+    Test content is reachable:
 
     ```
     curl http://198.18.100.1:8000/rhel8rt/GPL 
@@ -45,10 +47,11 @@ The purpose of this repo is to describe the enroll of RHEL and RHEL-RT nodes on 
 
     ```
     LABEL WORKER-RHEL
-    MENU LABEL ^RHEL WORKER (BIOS)
+    MENU LABEL ^R RHEL WORKER (BIOS)
     KERNEL rhel8/vmlinuz
-    append initrd=rhel8/initrd.img ip=eth0:dhcp inst.repo=http://198.18.100.1:8000/rhel8/
+    APPEND rd.neednet=1 initrd=rhel8/initrd.img console=tty0 ip=dhcp inst.ks=http://198.18.100.1:8000/ks/rhel8-worker-ks.cfg
     ```
+    # inst.repo=http://198.18.100.1:8000/rhel8/
 
 - Configure [`settings_upi.env`](scripts/settings_upi.env-UPDATETHIS) to match the environment
 
@@ -68,7 +71,8 @@ The purpose of this repo is to describe the enroll of RHEL and RHEL-RT nodes on 
 
 - Copy `rhel8-worker-ks.cfg` to the HTTP directory
     ```
-    cp ./rhel8-worker-ks.cfg /opt/nginx/html
+    mkdir -pv /opt/nginx/html/ks
+    cp ./rhel8-worker-ks.cfg /opt/nginx/html/ks
     ```
 
 - Update PXE boot and point to the Kickstart file in the web server

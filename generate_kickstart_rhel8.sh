@@ -2,8 +2,6 @@
 
 source ./scripts/settings_upi.env
 
-#ENC_ROOT_PASSSWORD=`python -c "import crypt; print(crypt.crypt('${ROOT_PASSWORD}', '\$1\$9zqQvtSY\$'))"`
-
 cat > rhel8-worker-ks.cfg <<EOT
 lang en_US
 keyboard us
@@ -22,6 +20,7 @@ selinux --enforcing
 firewall --enabled --ssh
 skipx
 firstboot --disable
+user --name=core --name="CoreOS" --password=${ENC_ROOT_PASSWORD} --iscrypted
 sshkey --username=core "${SSH_KEY}"
 %post --interpreter=/bin/bash
 # Get OCP Node Customizatons
