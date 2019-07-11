@@ -2,7 +2,7 @@
 
 source ./scripts/settings_upi.env
 
-ENC_ROOT_PASSSWORD = `python -c "import crypt; print(crypt.crypt('${ROOT_PASSWORD}', '\$1\$9zqQvtSY\$'))"`
+#ENC_ROOT_PASSSWORD=`python -c "import crypt; print(crypt.crypt('${ROOT_PASSWORD}', '\$1\$9zqQvtSY\$'))"`
 
 cat > rhel8-worker-ks.cfg <<EOT
 lang en_US
