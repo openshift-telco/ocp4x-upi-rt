@@ -52,7 +52,6 @@ curl -s ${KS_POST_SCRIPT} | bash /dev/stdin ${KS_POST_SCRIPT_OPTIONS}
 -usbutils
 -words
 -insights-client
-+python3
 %end
 
 repo --name=appstream --baseurl=${RHEL_APPSTREAM_LOCATION}
