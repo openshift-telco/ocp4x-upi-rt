@@ -47,6 +47,9 @@ https_proxy=${WORKER_HTTPS_PROXY}
 NO_PROXY=.svc,.cluster.local,.${CLUSTER_NAME}.${BASE_DOMAIN},${CLUSTER_NETWORK},${SERVICE_NETWORK}
 no_proxy=.svc,.cluster.local,.${CLUSTER_NAME}.${BASE_DOMAIN},${CLUSTER_NETWORK},${SERVICE_NETWORK}
 EOF
+
+    echo "Configure subscription-manager with PROXY configuration"
+    subscription-manager config --server.proxy_hostname=${PROXY_HOST} --server.proxy_port=${PROXY_PORT}
 }
 
 ssh_hardening() {
