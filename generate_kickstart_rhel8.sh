@@ -20,12 +20,20 @@ selinux --enforcing
 firewall --enabled --ssh
 skipx
 firstboot --disable
-user --name=core --name="CoreOS" --password=${ENC_ROOT_PASSWORD} --iscrypted
-sshkey --username=core "${SSH_KEY}"
-%post --interpreter=/bin/bash
+user --name=core --name="CoreOS" --groups=wheel
+
+##### START POST-INSTALL  ###################################
+%post --interpreter=/bin/bash --erroronfail --log=/root/ks-post.log
+
+# enable passwordless sudo for wheel
+echo "%wheel   ALL=(ALL)       NOPASSWD: ALL" >> /etc/sudoers.d/wheel
+sed -i "s/^.*requiretty/#Defaults requiretty/" /etc/sudoers
+
 # Get OCP Node Customizatons
 curl -s ${KS_POST_SCRIPT} | bash /dev/stdin ${KS_POST_SCRIPT_OPTIONS}
 %end
+###### END POST-INSTALL   ###################################
+
 %packages
 @standard
 -fprintd-pam
@@ -45,6 +53,7 @@ curl -s ${KS_POST_SCRIPT} | bash /dev/stdin ${KS_POST_SCRIPT_OPTIONS}
 -words
 -insights-client
 %end
+
 repo --name=appstream --baseurl=${RHEL_APPSTREAM_LOCATION}
 repo --name=rhel8rt --baseurl=${RHEL_RT_LOCATION}
 

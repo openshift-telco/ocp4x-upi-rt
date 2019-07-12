@@ -140,6 +140,23 @@ set_kubeconfig() {
         curl -k -J -L -s -o /root/.kube/config ${KUBECONFIG_PATH}
     fi
 }
+
+add_sshkey() {
+    # Add SSH Key to "root"
+    mkdir -m0700 /root/.ssh
+    echo ${SSH_KEY} >> /root/.ssh/authorized_keys
+    chmod 0600 /root/.ssh/authorized_keys
+    chown -R core:core /root/.ssh
+    restorecon -R /root/.ssh
+
+    # Add SSH Key to "core"
+    mkdir -m0700 /home/core/.ssh
+    echo ${SSH_KEY} >> /home/core/.ssh/authorized_keys
+    chmod 0600 /home/core/.ssh/authorized_keys
+    chown -R core:core /home/core/.ssh
+    restorecon -R /home/core/.ssh
+}
+
 ##########################################
 # Node Customizations
 ##########################################
