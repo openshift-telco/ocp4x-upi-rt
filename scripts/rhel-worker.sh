@@ -67,6 +67,7 @@ ssh_hardening() {
 enroll_and_install_node() {
     subscription-manager register --username $RH_USERNAME --password $RH_PASSWORD --force
     subscription-manager attach --pool=$RH_POOL
+    subscription-manager refresh
 
     # enable repos
     subscription-manager repos --enable=rhel-8-for-x86_64-baseos-rpms
