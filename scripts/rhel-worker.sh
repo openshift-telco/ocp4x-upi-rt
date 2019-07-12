@@ -16,12 +16,15 @@ SETTINGS_FILE=settings_upi.env
 ##############################################################
 set -eux
 
+RT_KERNEL=
+KUBECONFIG_PATH=
+
 # Validate settings files exist
 TEST_SETTINGS=`curl -s -o /dev/null -w "%{http_code}" ${SCRIPT_SERVER}/${SETTINGS_FILE}`
 
-if [ ! "${TEST_SETTINGS}" -eq "200" ]; then
+if [ "${TEST_SETTINGS}" -eq "200" ]; then
     echo "Great! Seetings file exist!";
-    curl -J -L -o /tmp/${SETTINGS_FILE} ${SCRIPT_SERVER}/${SETTINGS_FILE}
+    curl -s -J -L -o /tmp/${SETTINGS_FILE} ${SCRIPT_SERVER}/${SETTINGS_FILE}
     echo "Loading environment variables...";
     source /tmp/${SETTINGS_FILE}
 else
@@ -173,7 +176,7 @@ while [ "$1" != "" ]; do
             ;;
         --set_rt)
             add_rt_kernel
-            RT_KERNEL=1
+            RT_KERNEL="enabled"
             ;;
         -h | --help )
             usage
