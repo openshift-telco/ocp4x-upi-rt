@@ -96,13 +96,12 @@ enroll_and_install_node() {
 
     # set sebool container_manage_cgroup to run systemd inside a container
     setsebool -P container_manage_cgroup on || true
-}
 
-add_rt_kernel() {
     if [ -z "${RT_KERNEL}" ]; then
         echo "Regular RHEL Node"
     else
         echo "RHEL-RT Node. Installing Real-Time Kernel..."
+        # NOTE: Commenting becaue using local repo
         subscription-manager repos --enable=rhel-8-for-x86_64-rt-rpms
         yum groupinstall -y RT
     fi
@@ -139,7 +138,7 @@ set_kubeconfig() {
         mkdir /root/.kube 
         # NOTE: This does not work with kickstart as python3 is not available until after the reboot
         # when using the script with KS, explicitly define URL to kubeconfig
-        curl -J -L -s ${SCRIPT_SERVER}/kubeconfig-from-ignition.py | python3 /dev/stdin -f /tmp/bootstrap.ign -o /root/.kube/config -u ${IGNITION_URL}
+        curl -J -L -s ${SCRIPT_SERVER}/kubeconfig-from-ignition.py | /usr/libexec/platform-python /dev/stdin -f /tmp/bootstrap.ign -o /root/.kube/config -u ${IGNITION_URL}
     else
         echo "Retrieving KUBECONFIG from URL"
         mkdir /root/.kube 
@@ -180,7 +179,6 @@ while getopts ":k:xrh" opt; do
         r ) #set rt kernel
             RT_KERNEL="enabled"
             echo "Setting Real-Time Kernel"
-            add_rt_kernel
             ;;
         h )
             usage
@@ -211,10 +209,8 @@ set_kubeconfig
 setup_ignition_service
 
 # Enroll NODE with RHN
-enroll_and_install_node
-
 # Add RT Kernel (if needed)
-add_rt_kernel
+enroll_and_install_node
 
 #
 ssh_hardening
