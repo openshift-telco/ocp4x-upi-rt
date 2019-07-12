@@ -18,13 +18,13 @@ SETTINGS_FILE=settings_upi.env
 # Validate settings files exist
 TEST_SETTINGS=`curl -s -o /dev/null -w "%{http_code}" {SCRIPT_SERVER}/${SETTINGS_FILE}`
 
-if [ "$TEST_SETTINGS" == "200" ]; then
+if [ ! "${TEST_SETTINGS}" -eq "200" ]; then
     echo "Great! Seetings file exist!";
     curl -J -L -o /tmp/${SETTINGS_FILE} ${SCRIPT_SERVER}/${SETTINGS_FILE}
     echo "Loading environment variables...";
     source /tmp/${SETTINGS_FILE}
 else
-    echo "ERROR: Settings file ${SETTINGS_FILE} is not accessible. Check script configuration."
+    echo "ERROR: (Code: ${TEST_SETTINGS} ) Settings file ${SETTINGS_FILE} is not accessible. Check configuration of $0 script."
     exit 1
 fi
 
