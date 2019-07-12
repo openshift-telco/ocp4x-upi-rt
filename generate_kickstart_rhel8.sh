@@ -2,6 +2,9 @@
 
 source ./scripts/settings_upi.env
 
+# For customization see the Kickstart reference:
+# https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/8/html-single/performing_an_advanced_rhel_installation/index#kickstart_references
+
 cat > rhel8-worker-ks.cfg <<EOT
 lang en_US
 keyboard us
@@ -54,7 +57,12 @@ curl -s ${KS_POST_SCRIPT} | bash /dev/stdin ${KS_POST_SCRIPT_OPTIONS}
 -insights-client
 %end
 
-repo --name=appstream --baseurl=${RHEL_APPSTREAM_LOCATION}
-repo --name=rhel8rt --baseurl=${RHEL_RT_LOCATION}
+%addon com_redhat_kdump --disable
+%end
+
+repo --name=appstream --baseurl=${RHEL_APPSTREAM_LOCATION} --install
+repo --name=rhel8rt --baseurl=${RHEL_RT_LOCATION} --install
 
 EOT
+
+echo "Done. Kickstart 'rhel8-worker-ks.cfg' generated. Upload to the web server."

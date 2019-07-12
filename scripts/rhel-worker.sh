@@ -17,7 +17,7 @@ SETTINGS_FILE=settings_upi.env
 set -eux
 
 RT_KERNEL=
-KUBECONFIG_PATH=
+KUBECONFIG_URL=
 
 # Validate settings files exist
 TEST_SETTINGS=`curl -s -o /dev/null -w "%{http_code}" ${SCRIPT_SERVER}/${SETTINGS_FILE}`
@@ -133,7 +133,7 @@ setup_ignition_service(){
 [Unit]
 Description=Run ignition commands
 Requires=network-online.target
-After=network-online.target
+After=network-online.target crio.service
 
 [Service]
 ExecStart=/tmp/runignition.sh
@@ -154,16 +154,15 @@ EOL
 }
 
 set_kubeconfig() {
-    if [ -z "${KUBECONFIG_PATH}" ]; then
+    if [ -z "${KUBECONFIG_URL}" ]; then
         echo "Extracting KUBECONFIG from MachineConfigPool..."
         mkdir /root/.kube 
-        # NOTE: This does not work with kickstart as python3 is not available until after the reboot
-        # when using the script with KS, explicitly define URL to kubeconfig
+        # NOTE: This requires python3. When using the script with Kickstart, explicitly define URL to kubeconfig
         curl -J -L -s ${SCRIPT_SERVER}/kubeconfig-from-ignition.py | /usr/libexec/platform-python /dev/stdin -f /tmp/bootstrap.ign -o /root/.kube/config -u ${IGNITION_URL}
     else
         echo "Retrieving KUBECONFIG from URL"
         mkdir /root/.kube 
-        curl -k -J -L -s -o /root/.kube/config ${KUBECONFIG_PATH}
+        curl -k -J -L -s -o /root/.kube/config ${KUBECONFIG_URL}
     fi
 }
 
