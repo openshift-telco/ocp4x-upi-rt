@@ -60,8 +60,8 @@ curl -s ${KS_POST_SCRIPT} | bash /dev/stdin ${KS_POST_SCRIPT_OPTIONS}
 %addon com_redhat_kdump --disable
 %end
 
-repo --name=appstream --baseurl=${RHEL_APPSTREAM_LOCATION} --install
-repo --name=rhel8rt --baseurl=${RHEL_RT_LOCATION} --install
+repo --name=appstream --baseurl=${RHEL_APPSTREAM_LOCATION} --install --cost=1
+repo --name=rhel8rt --baseurl=${RHEL_RT_LOCATION} --install --cost=1
 
 EOT
 

@@ -68,6 +68,9 @@ ssh_hardening() {
 }
 
 enroll_and_install_node() {
+    curl -o /tmp/RPM-GPG-KEY-redhat-release -s ${RHEL_BASEOS_LOCATION}/RPM-GPG-KEY-redhat-release
+    rpm --import /tmp/RPM-GPG-KEY-redhat-release
+
     subscription-manager register --username $RH_USERNAME --password $RH_PASSWORD --force
     subscription-manager attach --pool=$RH_POOL_OSP
     subscription-manager refresh
