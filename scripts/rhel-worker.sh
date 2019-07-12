@@ -165,11 +165,11 @@ add_sshkey() {
 # Node Customizations
 ##########################################
 # Read params
-while [ "$1" != "" ]; do
-    case $1 in
+for val in "$@" ; do
+    case $val in
         -k | --kubeconfig )
             shift
-            KUBECONFIG_PATH=$1
+            KUBECONFIG_PATH=$val
             ;;
         -x | --set_proxy )
             set_proxy
@@ -186,7 +186,6 @@ while [ "$1" != "" ]; do
             usage
             exit 1
     esac
-    shift
 done
 
 # Write pull secret
