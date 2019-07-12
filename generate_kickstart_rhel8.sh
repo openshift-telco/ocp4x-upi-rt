@@ -6,7 +6,7 @@ cat > rhel8-worker-ks.cfg <<EOT
 lang en_US
 keyboard us
 timezone America/New_York --isUtc
-rootpw ${ENC_ROOT_PASSWORD} --iscrypted
+rootpw ${ROOT_PASSWORD} --plaintext
 #platform x86, AMD64, or Intel EM64T
 reboot
 url --url=${RHEL_BASEOS_LOCATION}
@@ -20,7 +20,7 @@ selinux --enforcing
 firewall --enabled --ssh
 skipx
 firstboot --disable
-user --name=core --name="CoreOS" --groups=wheel
+user --name=core --name="CoreOS" --groups=wheel --password=${ROOT_PASSWORD} --plaintext
 
 ##### START POST-INSTALL  ###################################
 %post --interpreter=/bin/bash --erroronfail --log=/root/ks-post.log

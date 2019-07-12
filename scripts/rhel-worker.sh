@@ -58,7 +58,7 @@ ssh_hardening() {
     # Enable passwordless sudo for wheel
     echo "%wheel   ALL=(ALL)       NOPASSWD: ALL" >> /etc/sudoers.d/wheel
     sed -i "s/^.*requiretty/#Defaults requiretty/" /etc/sudoers
-    # SSH Hardening
+    # SSH Hardening (only allow "core" user)
     echo "AllowUsers  core" >> /etc/ssh/sshd_config
     echo "DenyUsers   root" >> /etc/ssh/sshd_config
     echo "AllowGroups core" >> /etc/ssh/sshd_config
@@ -124,7 +124,8 @@ EOL
     cmdline_realtime="+isolcpus=\${isolated_cores} intel_pstate=disable nosoftlockup nmi_watchdog=0 audit=0 mce=off kthread_cpus=0 irqaffinity=0 skew_tick=1 processor.max_cstate=1 idle=poll intel_idle.max_cstate=0 intel_pstate=disable intel_iommu=off default_hugepagesz=\${hugepage_size_default} hugepagesz=\${hugepage_size} hugepages=\${hugepage_num} nohz=on nohz_full=\${isolated_cores} rcu_nocbs=\${isolated_cores}"
 
     sed -i 's|^cmdline_realtime.*|cmdline_realtime='"${cmdline_realtime}"'|' /usr/lib/tuned/realtime/tuned.conf  
-
+    tuned-adm profile realtime
+    echo "NOTICE: This node should be rebooted for Real-Time profile to take effect"
 }
 
 setup_ignition_service(){    
