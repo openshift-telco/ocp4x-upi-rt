@@ -137,7 +137,9 @@ set_kubeconfig() {
     if [ -z "${KUBECONFIG_PATH}" ]; then
         echo "Extracting KUBECONFIG from MachineConfigPool..."
         mkdir /root/.kube 
-        curl -J -L -s ${SCRIPT_SERVER}/kubeconfig-from-ignition.py | python3 /dev/stdin -f /tmp/bootstrap.ign -o /root/.kube/config
+        # NOTE: This does not work with kickstart as python3 is not available until after the reboot
+        # when using the script with KS, explicitly define URL to kubeconfig
+        curl -J -L -s ${SCRIPT_SERVER}/kubeconfig-from-ignition.py | python3 /dev/stdin -f /tmp/bootstrap.ign -o /root/.kube/config -u ${IGNITION_URL}
     else
         echo "Retrieving KUBECONFIG from URL"
         mkdir /root/.kube 

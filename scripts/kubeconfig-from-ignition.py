@@ -1,6 +1,3 @@
-#!/usr/local/bin/python3
-
-# For Linux use this
 #!/bin/env python3
 
 import argparse, json, urllib.request, urllib.parse, ssl 

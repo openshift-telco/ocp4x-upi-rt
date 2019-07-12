@@ -57,6 +57,12 @@ The purpose of this repo is to describe the enroll of RHEL and RHEL-RT nodes on 
 
 - Update `SCRIPT_SERVER=` variable in script [`./scripts/rhel-worker.sh`](scripts/rhel-worker.sh) to point to the web server
 
+- Retrieve Kubeconfig from MachineConfig
+
+    ```
+    ./scripts/kubeconfig-from-ignition.py > ./scripts/kubeconfig
+    ```
+
 - Copy `./scripts` folder to the HTTP directory
 
     ```
