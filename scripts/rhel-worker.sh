@@ -14,9 +14,10 @@ SETTINGS_FILE=settings_upi.env
 ##############################################################
 # DO NOT MODIFY AFTER THIS LINE
 ##############################################################
+set -eux
 
 # Validate settings files exist
-TEST_SETTINGS=`curl -s -o /dev/null -w "%{http_code}" {SCRIPT_SERVER}/${SETTINGS_FILE}`
+TEST_SETTINGS=`curl -s -o /dev/null -w "%{http_code}" ${SCRIPT_SERVER}/${SETTINGS_FILE}`
 
 if [ ! "${TEST_SETTINGS}" -eq "200" ]; then
     echo "Great! Seetings file exist!";

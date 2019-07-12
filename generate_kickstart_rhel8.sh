@@ -24,7 +24,7 @@ user --name=core --name="CoreOS" --groups=wheel
 
 ##### START POST-INSTALL  ###################################
 %post --interpreter=/bin/bash --erroronfail --log=/root/ks-post.log
-
+set -eux
 # enable passwordless sudo for wheel
 echo "%wheel   ALL=(ALL)       NOPASSWD: ALL" >> /etc/sudoers.d/wheel
 sed -i "s/^.*requiretty/#Defaults requiretty/" /etc/sudoers
