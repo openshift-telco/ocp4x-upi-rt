@@ -66,7 +66,7 @@ ssh_hardening() {
 
 enroll_and_install_node() {
     subscription-manager register --username $RH_USERNAME --password $RH_PASSWORD --force
-    subscription-manager attach --pool=$RH_POOL
+    subscription-manager attach --pool=$RH_POOL_OSP
     subscription-manager refresh
 
     # enable repos
@@ -103,6 +103,7 @@ enroll_and_install_node() {
     else
         echo "RHEL-RT Node. Installing Real-Time Kernel..."
         # NOTE: Commenting becaue using local repo
+        subscription-manager attach --pool=$RH_POOL_RT
         subscription-manager repos --enable=rhel-8-for-x86_64-rt-rpms
         yum groupinstall -y RT
         set_rt_tuned_profile
