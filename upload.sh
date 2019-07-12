@@ -1,6 +1,6 @@
 #!/bin/sh
 
-if [ -n "${KUBECONFIG}" ]; do
+if [ -n "${KUBECONFIG}" ]; then
     echo "Copying KUBECONFIG into scripts"
     cp -f ${KUBECONFIG} ./scripts/kubeconfig 
     echo "Uploading KS and scripts to local web server"
