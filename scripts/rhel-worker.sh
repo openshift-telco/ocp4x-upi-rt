@@ -68,21 +68,26 @@ ssh_hardening() {
 }
 
 enroll_and_install_node() {
-    curl -o /tmp/RPM-GPG-KEY-redhat-release -s ${RHEL_BASEOS_LOCATION}/RPM-GPG-KEY-redhat-release
+    echo "Importing KEY from BaseOS repo"
+    curl -s -o /tmp/RPM-GPG-KEY-redhat-release ${RHEL_BASEOS_LOCATION}/RPM-GPG-KEY-redhat-release
     rpm --import /tmp/RPM-GPG-KEY-redhat-release
 
+    echo "Registering system"
     subscription-manager register --username $RH_USERNAME --password $RH_PASSWORD --force
     subscription-manager attach --pool=$RH_POOL_OSP
     subscription-manager refresh
 
     # enable repos
+    echo "Enabling RHEL and OCP repos"
     subscription-manager repos --enable=rhel-8-for-x86_64-baseos-rpms
     subscription-manager repos --enable=rhel-8-for-x86_64-appstream-rpms
     subscription-manager repos --enable=rhocp-4.1-for-rhel-8-x86_64-rpms
 
     # install required packages
+    echo "Upgrading OS"
     dnf update -y
 
+    echo "Installing packages required for OCP"
     dnf -y install git wget kernel irqbalance microcode_ctl systemd selinux-policy-targeted \
     setools-console dracut-network passwd openssh-server openssh-clients podman skopeo runc \
     containernetworking-plugins nfs-utils NetworkManager dnsmasq lvm2 iscsi-initiator-utils \
@@ -128,6 +133,7 @@ EOL
 
     sed -i 's|^cmdline_realtime.*|cmdline_realtime='"${cmdline_realtime}"'|' /usr/lib/tuned/realtime/tuned.conf  
     tuned-adm profile realtime
+
     echo "NOTICE: This node should be rebooted for Real-Time profile to take effect"
 }
 
@@ -174,7 +180,6 @@ add_sshkey() {
     mkdir -m0700 /root/.ssh
     echo ${SSH_KEY} >> /root/.ssh/authorized_keys
     chmod 0600 /root/.ssh/authorized_keys
-    chown -R core:core /root/.ssh
     restorecon -R /root/.ssh
 
     # Add SSH Key to "core"
@@ -236,7 +241,7 @@ setup_ignition_service
 enroll_and_install_node
 
 #
-ssh_hardening
+#ssh_hardening
 
 ##############################################################
 # END OF FILE
