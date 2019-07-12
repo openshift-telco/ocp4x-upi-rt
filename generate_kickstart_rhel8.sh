@@ -10,7 +10,7 @@ rootpw ${ENC_ROOT_PASSWORD} --iscrypted
 #platform x86, AMD64, or Intel EM64T
 reboot
 url --url=${RHEL_BASEOS_LOCATION}
-bootloader --location=mbr --boot-dirve=${RHEL_INSTALL_DEV} --append="rhgb quiet crashkernel=auto"
+bootloader --location=mbr --boot-drive=${RHEL_INSTALL_DEV} --append="rhgb quiet crashkernel=auto"
 ignoredisk --only-use=${RHEL_INSTALL_DEV}
 zerombr
 clearpart --all --initlabel
