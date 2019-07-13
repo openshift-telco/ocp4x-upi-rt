@@ -52,21 +52,6 @@ EOF
     subscription-manager config --server.proxy_hostname=${PROXY_HOST} --server.proxy_port=${PROXY_PORT}
 }
 
-ssh_hardening() {
-    # Disable root access 
-    sed -i '/^root/ s/\/bin\/bash/\/sbin\/nologin/' /etc/passwd
-    # Enable passwordless sudo for wheel
-    echo "%wheel   ALL=(ALL)       NOPASSWD: ALL" >> /etc/sudoers.d/wheel
-    sed -i "s/^.*requiretty/#Defaults requiretty/" /etc/sudoers
-    # SSH Hardening (only allow "core" user)
-    echo "AllowUsers  core" >> /etc/ssh/sshd_config
-    echo "DenyUsers   root" >> /etc/ssh/sshd_config
-    echo "AllowGroups core" >> /etc/ssh/sshd_config
-    echo "DenyUsers   root" >> /etc/ssh/sshd_config
-    # Disable require TTY for sudo
-    sed -i "s/^.*requiretty/#Defaults requiretty/" /etc/sudoers
-}
-
 enroll_and_install_node() {
     echo "Importing KEY from BaseOS repo"
     curl -s -o /tmp/RPM-GPG-KEY-redhat-release ${RHEL_BASEOS_LOCATION}/RPM-GPG-KEY-redhat-release
@@ -74,7 +59,7 @@ enroll_and_install_node() {
 
     echo "Registering system"
     subscription-manager register --username $RH_USERNAME --password $RH_PASSWORD --force
-    subscription-manager attach --pool=$RH_POOL_OSP
+    subscription-manager attach   --pool=$RH_POOL_OSP
     subscription-manager refresh
 
     # enable repos
@@ -94,7 +79,7 @@ enroll_and_install_node() {
     sg3_utils device-mapper-multipath xfsprogs e2fsprogs mdadm cryptsetup chrony logrotate \
     sssd shadow-utils sudo coreutils less tar xz gzip bzip2 rsync tmux nmap-ncat net-tools \
     bind-utils strace bash-completion vim-minimal nano authconfig iptables-services biosdevname \
-    cloud-utils-growpart glusterfs-fuse cri-o openshift-clients openshift-hyperkube
+    cloud-utils-growpart glusterfs-fuse cri-o cri-tools openshift-clients openshift-hyperkube
 
     # enable cri-o
     systemctl enable cri-o
@@ -145,7 +130,7 @@ Requires=network-online.target
 After=network-online.target crio.service
 
 [Service]
-ExecStart=/tmp/runignition.sh
+ExecStart=/usr/local/bin/runignition.sh
 
 [Install]
 WantedBy=multi-user.target
@@ -157,8 +142,8 @@ EOL
 
     sed -i '/^.*linux16.*/ s/$/ ip=${RHEL_PRIMARY_NIC}:dhcp rd.neednet=1/' /boot/grub2/grub.cfg
 
-    curl -J -L -o /tmp/runignition.sh ${SCRIPT_SERVER}/runignition.sh
-    chmod a+x /tmp/runignition.sh
+    curl -J -L -o /usr/local/bin/runignition.sh ${SCRIPT_SERVER}/runignition.sh
+    chmod a+x /usr/local/bin/runignition.sh
     touch /tmp/runonce
 }
 
@@ -175,7 +160,7 @@ set_kubeconfig() {
     fi
 }
 
-add_sshkey() {
+add_sshkey_core() {
     # Add SSH Key to "root"
     mkdir -m0700 /root/.ssh
     echo ${SSH_KEY} >> /root/.ssh/authorized_keys
@@ -188,6 +173,21 @@ add_sshkey() {
     chmod 0600 /home/core/.ssh/authorized_keys
     chown -R core:core /home/core/.ssh
     restorecon -R /home/core/.ssh
+}
+
+ssh_hardening() {
+    # Disable root access 
+    sed -i '/^root/ s/\/bin\/bash/\/sbin\/nologin/' /etc/passwd
+    # Enable passwordless sudo for wheel
+    echo "%wheel   ALL=(ALL)       NOPASSWD: ALL" >> /etc/sudoers.d/wheel
+    sed -i "s/^.*requiretty/#Defaults requiretty/" /etc/sudoers
+    # SSH Hardening (only allow "core" user)
+    echo "AllowUsers  core" >> /etc/ssh/sshd_config
+    echo "DenyUsers   root" >> /etc/ssh/sshd_config
+    echo "AllowGroups core" >> /etc/ssh/sshd_config
+    echo "DenyUsers   root" >> /etc/ssh/sshd_config
+    # Disable require TTY for sudo
+    sed -i "s/^.*requiretty/#Defaults requiretty/" /etc/sudoers
 }
 
 ##########################################
@@ -224,24 +224,23 @@ while getopts ":k:xrh" opt; do
     esac
 done
 
+# Add SSH key to "core"
+add_sshkey_core
+#ssh_hardening
+
 # Write pull secret
 printf ${PULL_SECRET} > /tmp/pull.json
 
 # Pull ignition file into temporary file
 curl -k -J -L -s -o /tmp/bootstrap.ign ${IGNITION_URL}
 
-# Obtain and write kubeconfig
-set_kubeconfig
-
-# Setup Ignition Service
-setup_ignition_service
-
 # Enroll NODE with RHN
 # Add RT Kernel (if needed)
 enroll_and_install_node
 
-#
-#ssh_hardening
+# Obtain Kubeconfig and setup Ignition Service
+set_kubeconfig
+setup_ignition_service
 
 ##############################################################
 # END OF FILE

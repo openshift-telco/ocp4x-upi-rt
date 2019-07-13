@@ -23,7 +23,7 @@ selinux --enforcing
 firewall --enabled --ssh
 skipx
 firstboot --disable
-user --name=core --name="CoreOS" --groups=wheel --password=${ROOT_PASSWORD} --plaintext
+user --name=core --groups=wheel --password=${ROOT_PASSWORD} --plaintext
 
 ##### START POST-INSTALL  ###################################
 %post --interpreter=/bin/bash --erroronfail --log=/root/ks-post.log

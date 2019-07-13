@@ -10,6 +10,9 @@ if [ -e /tmp/runonce ]; then
     # run MCD image
     podman pull --tls-verify=false --authfile /tmp/pull.json $RELEASE_IMAGE
     podman run -v /:/rootfs -v /var/run/dbus:/var/run/dbus -v /run/systemd:/run/systemd --privileged --rm -ti $RELEASE_IMAGE start --node-name $HOSTNAME --once-from /tmp/bootstrap.ign --skip-reboot
-    echo "Running Ignition completed!"
+
+    echo "Running MCD completed!"
+    systemctl daemon-reload
+    sleep 5 # inject delay before reboot
     reboot
 fi
