@@ -17,7 +17,9 @@ bootloader --location=mbr --boot-drive=${RHEL_INSTALL_DEV} --append="rhgb quiet 
 ignoredisk --only-use=${RHEL_INSTALL_DEV}
 zerombr
 clearpart --all --initlabel
-autopart
+# Note: Create manual partitions!!!
+# WARNING: using "autopart" creates a "swap" partition causing Kubelet to fail to start
+part / --fstype xfs --grow
 auth --passalgo=sha512 --useshadow
 selinux --enforcing
 firewall --enabled --ssh

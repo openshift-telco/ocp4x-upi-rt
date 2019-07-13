@@ -95,8 +95,9 @@ enroll_and_install_node() {
     # enable cri-o
     systemctl enable cri-o
 
-    # disable swap
+    # disable swap (required by Kubelet)
     swapoff -a
+    sed -i '/.*swap.*/d' /etc/fstab
 
     # enable ip forwarding
     sysctl -w net.ipv4.ip_forward=1
@@ -173,10 +174,10 @@ set_kubeconfig() {
 
 add_sshkey_core() {
     # Add SSH Key to "root"
-    mkdir -m0700 /root/.ssh
-    echo ${SSH_KEY} >> /root/.ssh/authorized_keys
-    chmod 0600 /root/.ssh/authorized_keys
-    restorecon -R /root/.ssh
+    # mkdir -m0700 /root/.ssh
+    # echo ${SSH_KEY} >> /root/.ssh/authorized_keys
+    # chmod 0600 /root/.ssh/authorized_keys
+    # restorecon -R /root/.ssh
 
     # Add SSH Key to "core"
     mkdir -m0700 /home/core/.ssh
@@ -186,19 +187,28 @@ add_sshkey_core() {
     restorecon -R /home/core/.ssh
 }
 
-ssh_hardening() {
-    # Disable root access 
-    #sed -i '/^root/ s/\/bin\/bash/\/sbin\/nologin/' /etc/passwd
+sshd_hardening() {
     # Enable passwordless sudo for wheel
     echo "%wheel   ALL=(ALL)       NOPASSWD: ALL" >> /etc/sudoers.d/wheel
     sed -i "s/^.*requiretty/#Defaults requiretty/" /etc/sudoers
+
     # SSH Hardening (only allow "core" user)
     echo "AllowUsers  core" >> /etc/ssh/sshd_config
-    echo "DenyUsers   root" >> /etc/ssh/sshd_config
     echo "AllowGroups core" >> /etc/ssh/sshd_config
-    echo "DenyUsers   root" >> /etc/ssh/sshd_config
+
+    # Disable SSH password authentication
+    sed -i 's|^ChallengeResponseAuthentication.*|ChallengeResponseAuthentication no|' /etc/ssh/sshd_config
+    sed -i 's|^PasswordAuthentication.*|PasswordAuthentication no|' /etc/ssh/sshd_config
+    sed -i 's|^UsePAM.*|UsePAM no|' /etc/ssh/sshd_config
+
+    # Disable SSH root login
+    sed -i 's|^PermitRootLogin.*|PermitRootLogin no|' /etc/ssh/sshd_config
+
     # Disable require TTY for sudo
     sed -i "s/^.*requiretty/#Defaults requiretty/" /etc/sudoers
+
+    # Disable all root access (Comment to allow root console access)
+    #sed -i '/^root/ s/\/bin\/bash/\/sbin\/nologin/' /etc/passwd
 }
 
 ##########################################
@@ -237,7 +247,7 @@ done
 
 # Add SSH key to "core"
 add_sshkey_core
-ssh_hardening
+sshd_hardening
 
 # Write pull secret
 printf ${PULL_SECRET} > /tmp/pull.json
