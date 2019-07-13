@@ -188,7 +188,7 @@ add_sshkey_core() {
 
 ssh_hardening() {
     # Disable root access 
-    sed -i '/^root/ s/\/bin\/bash/\/sbin\/nologin/' /etc/passwd
+    #sed -i '/^root/ s/\/bin\/bash/\/sbin\/nologin/' /etc/passwd
     # Enable passwordless sudo for wheel
     echo "%wheel   ALL=(ALL)       NOPASSWD: ALL" >> /etc/sudoers.d/wheel
     sed -i "s/^.*requiretty/#Defaults requiretty/" /etc/sudoers
@@ -237,7 +237,7 @@ done
 
 # Add SSH key to "core"
 add_sshkey_core
-#ssh_hardening
+ssh_hardening
 
 # Write pull secret
 printf ${PULL_SECRET} > /tmp/pull.json
