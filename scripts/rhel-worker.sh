@@ -64,9 +64,12 @@ enroll_and_install_node() {
 
     # enable repos
     echo "Enabling RHEL and OCP repos"
-    subscription-manager repos --enable=rhel-8-for-x86_64-baseos-rpms
-    subscription-manager repos --enable=rhel-8-for-x86_64-appstream-rpms
-    subscription-manager repos --enable=rhocp-4.1-for-rhel-8-x86_64-rpms
+
+    subscription-manager repos \
+    --enable="rhel-8-for-x86_64-baseos-rpms" \
+    --enable="rhel-8-for-x86_64-appstream-rpms" \
+    --enable="rhel-8-for-x86_64-supplementary-rpms" \
+    --enable="rhocp-4.1-for-rhel-8-x86_64-rpms"
 
     # install required packages
     echo "Upgrading OS"
@@ -81,16 +84,13 @@ enroll_and_install_node() {
     # bind-utils strace bash-completion vim-minimal nano authconfig iptables-services biosdevname \
     # cloud-utils-growpart glusterfs-fuse cri-o cri-tools openshift-clients openshift-hyperkube
 
-    # Updated to match playbook (plus utils for scripts)
+    # Updated to match playbook. Not including duplicate packages.
     # https://github.com/openshift/openshift-ansible/blob/release-4.1/roles/openshift_node/defaults/main.yml
-    dnf -y install cri-o openshift-clients openshift-hyperkube kernel irqbalance microcode_ctl \
-    systemd selinux-policy-targeted setools-console dracut-network passwd openssh-server \
-    openssh-clients podman skopeo runc containernetworking-plugins cri-tools nfs-utils \
-    NetworkManager dnsmasq lvm2 iscsi-initiator-utils sg3_utils device-mapper-multipath \
-    xfsprogs e2fsprogs mdadm cryptsetup chrony logrotate sssd shadow-utils sudo coreutils \
-    less tar xz gzip bzip2 rsync tmux nmap-ncat net-tools bind-utils strace bash-completion \
-    vim-minimal nano authconfig policycoreutils-python iptables-services bridge-utils \
-    biosdevname container-storage-setup cloud-utils-growpart ceph-common glusterfs-fuse
+    dnf -y install cri-o openshift-clients openshift-hyperkube  \
+    setools-console podman skopeo runc containernetworking-plugins cri-tools nfs-utils \
+    dnsmasq iscsi-initiator-utils device-mapper-multipath tmux nmap-ncat  \
+    authconfig iptables-services cloud-utils-growpart glusterfs-fuse
+    # NOTE: Not available for RHEL8: policycoreutils-python container-storage-setup ceph-common bridge-utils 
 
     # enable cri-o
     systemctl enable cri-o
