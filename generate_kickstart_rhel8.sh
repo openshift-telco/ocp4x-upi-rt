@@ -55,6 +55,8 @@ curl -s ${KS_POST_SCRIPT} | bash /dev/stdin ${KS_POST_SCRIPT_OPTIONS}
 -usbutils
 -words
 -insights-client
+tree
+jq
 %end
 
 %addon com_redhat_kdump --disable
