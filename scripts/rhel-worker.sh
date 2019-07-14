@@ -54,7 +54,7 @@ EOF
 
 enroll_and_install_node() {
     echo "Importing KEY from BaseOS repo"
-    curl -s -o /tmp/RPM-GPG-KEY-redhat-release ${RHEL_BASEOS_LOCATION}/RPM-GPG-KEY-redhat-release
+    curl -s -o /tmp/RPM-GPG-KEY-redhat-release ${RHEL_BASEOS_URL}/RPM-GPG-KEY-redhat-release
     rpm --import /tmp/RPM-GPG-KEY-redhat-release
 
     echo "Registering system"
@@ -120,10 +120,10 @@ enroll_and_install_node() {
 
 set_rt_tuned_profile() {
     cat <<EOL > /etc/tuned/realtime-variables.conf
-isolated_cores=2-39
-hugepage_size_default=1G
-hugepage_size=1G
-hugepage_num=32
+isolated_cores=${RT_TUNED_ISOLATE_CORES}
+hugepage_size_default=${RT_TUNED_HUGEPAGE_SIZE_DEFAULT}
+hugepage_size=${RT_TUNED_HUGEPAGE_SIZE}
+hugepage_num=${RT_TUNED_HUGEPAGE_NUM}
 EOL
 
     cmdline_realtime="+isolcpus=\${isolated_cores} intel_pstate=disable nosoftlockup nmi_watchdog=0 audit=0 mce=off kthread_cpus=0 irqaffinity=0 skew_tick=1 processor.max_cstate=1 idle=poll intel_idle.max_cstate=0 intel_pstate=disable intel_iommu=off default_hugepagesz=\${hugepage_size_default} hugepagesz=\${hugepage_size} hugepages=\${hugepage_num} nohz=on nohz_full=\${isolated_cores} rcu_nocbs=\${isolated_cores}"

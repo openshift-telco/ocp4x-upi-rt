@@ -12,7 +12,7 @@ timezone America/New_York --isUtc
 rootpw ${ROOT_PASSWORD} --plaintext
 #platform x86, AMD64, or Intel EM64T
 reboot
-url --url=${RHEL_BASEOS_LOCATION}
+url --url=${RHEL_BASEOS_URL}
 bootloader --location=mbr --boot-drive=${RHEL_INSTALL_DEV} --append="rhgb quiet crashkernel=auto"
 ignoredisk --only-use=${RHEL_INSTALL_DEV}
 zerombr
@@ -60,12 +60,9 @@ curl -s ${KS_POST_SCRIPT} | bash /dev/stdin ${KS_POST_SCRIPT_OPTIONS}
 tree
 jq
 %end
-
-%addon com_redhat_kdump --disable
-%end
-
-repo --name=appstream --baseurl=${RHEL_APPSTREAM_LOCATION} --install --cost=1
-repo --name=rhel8rt --baseurl=${RHEL_RT_LOCATION} --install --cost=1
+# Adding ISO content as permanent repos
+repo --name=appstream-iso --baseurl=${RHEL_APPSTREAM_URL} --install --cost=1
+repo --name=rhel8rt-iso   --baseurl=${RHEL_RT_URL}        --install --cost=1
 
 EOT
 
