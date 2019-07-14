@@ -2,9 +2,14 @@
 
 source ./scripts/settings_upi.env
 
+echo "Updating ./scripts/rhel-worker.sh to match environment"
+sed -i 's|^SCRIPTS_URL=.*|SCRIPTS_URL='"${KS_SCRIPTS_URL}"'|' ./scripts/rhel-worker.sh 
+echo "Done"
+
 # For customization see the Kickstart reference:
 # https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/8/html-single/performing_an_advanced_rhel_installation/index#kickstart_references
 
+echo "Generating Kickstart file"
 cat > rhel8-worker-ks.cfg <<EOT
 lang en_US
 keyboard us
@@ -12,7 +17,7 @@ timezone America/New_York --isUtc
 rootpw ${ROOT_PASSWORD} --plaintext
 #platform x86, AMD64, or Intel EM64T
 reboot
-url --url=${RHEL_BASEOS_URL}
+url --url=${RHEL_BASEOS_URL}/
 bootloader --location=mbr --boot-drive=${RHEL_INSTALL_DEV} --append="rhgb quiet crashkernel=auto"
 ignoredisk --only-use=${RHEL_INSTALL_DEV}
 zerombr
@@ -61,8 +66,8 @@ tree
 jq
 %end
 # Adding ISO content as permanent repos
-repo --name=appstream-iso --baseurl=${RHEL_APPSTREAM_URL} --install --cost=1
-repo --name=rhel8rt-iso   --baseurl=${RHEL_RT_URL}        --install --cost=1
+repo --name=appstream-iso --baseurl=${RHEL_APPSTREAM_URL}/ --install --cost=1
+repo --name=rhel8rt-iso   --baseurl=${RHEL_RT_URL}/        --install --cost=1
 
 EOT
 

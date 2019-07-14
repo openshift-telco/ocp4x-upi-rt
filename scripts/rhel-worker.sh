@@ -3,7 +3,7 @@
 # UPDATE TO MATCH YOUR ENVIRONMENT
 ##############################################################
 
-SCRIPT_SERVER=http://198.18.100.1:8000/scripts
+SCRIPTS_URL=http://198.18.100.1:8000/scripts
 
 ##############################################################
 # DEFAULTS
@@ -20,11 +20,11 @@ RT_KERNEL=
 KUBECONFIG_URL=
 
 # Validate settings files exist
-TEST_SETTINGS=`curl -s -o /dev/null -w "%{http_code}" ${SCRIPT_SERVER}/${SETTINGS_FILE}`
+TEST_SETTINGS=`curl -s -o /dev/null -w "%{http_code}" ${SCRIPTS_URL}/${SETTINGS_FILE}`
 
 if [ "${TEST_SETTINGS}" -eq "200" ]; then
     echo "Great! Seetings file exist!";
-    curl -s -J -L -o /tmp/${SETTINGS_FILE} ${SCRIPT_SERVER}/${SETTINGS_FILE}
+    curl -s -J -L -o /tmp/${SETTINGS_FILE} ${SCRIPTS_URL}/${SETTINGS_FILE}
     echo "Loading environment variables...";
     source /tmp/${SETTINGS_FILE}
 else
@@ -154,7 +154,7 @@ EOL
 
     sed -i.bak '/^.*linux16.*/ s/$/ ip=${RHEL_PRIMARY_NIC}:dhcp rd.neednet=1/' /boot/grub2/grub.cfg
 
-    curl -J -L -o /usr/local/bin/runignition.sh ${SCRIPT_SERVER}/runignition.sh
+    curl -J -L -o /usr/local/bin/runignition.sh ${SCRIPTS_URL}/runignition.sh
     chmod a+x /usr/local/bin/runignition.sh
     touch /tmp/runonce
 }
@@ -164,7 +164,7 @@ set_kubeconfig() {
         echo "Extracting KUBECONFIG from MachineConfigPool..."
         mkdir /root/.kube 
         # NOTE: This requires python3. When using the script with Kickstart, explicitly define URL to kubeconfig
-        curl -J -L -s ${SCRIPT_SERVER}/kubeconfig-from-ignition.py | /usr/libexec/platform-python /dev/stdin -f /tmp/bootstrap.ign -o /root/.kube/config -u ${IGNITION_URL}
+        curl -J -L -s ${SCRIPTS_URL}/kubeconfig-from-ignition.py | /usr/libexec/platform-python /dev/stdin -f /tmp/bootstrap.ign -o /root/.kube/config -u ${IGNITION_URL}
     else
         echo "Retrieving KUBECONFIG from URL"
         mkdir /root/.kube 

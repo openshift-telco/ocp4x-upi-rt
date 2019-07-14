@@ -1,11 +1,11 @@
 #!/bin/env bash
 
 echo "Searching for Pending CSR requests..."
-PENDING=`oc get csr | grep Pending`
+PENDING_CSR=`oc get csr | grep Pending  | cut -f 1 -d" "`
 
-if [ -z "${PENDING}"]; then
+if [ -z "${PENDING_CSR}"]; then
     echo -e "\tNo Pending CSRs found."
 else
     echo -e "\tApproving Pending CSRs."
-    oc get csr | grep Pending | cut -f 1 -d" " | oc adm certificate approve `xargs`
+    oc adm certificate approve ${PENDING_CSR}
 fi
