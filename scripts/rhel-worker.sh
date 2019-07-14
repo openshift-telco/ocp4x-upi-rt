@@ -152,7 +152,7 @@ EOL
     systemctl daemon-reload 
     systemctl enable runignition
 
-    sed -i '/^.*linux16.*/ s/$/ ip=${RHEL_PRIMARY_NIC}:dhcp rd.neednet=1/' /boot/grub2/grub.cfg
+    sed -i.bak '/^.*linux16.*/ s/$/ ip=${RHEL_PRIMARY_NIC}:dhcp rd.neednet=1/' /boot/grub2/grub.cfg
 
     curl -J -L -o /usr/local/bin/runignition.sh ${SCRIPT_SERVER}/runignition.sh
     chmod a+x /usr/local/bin/runignition.sh
