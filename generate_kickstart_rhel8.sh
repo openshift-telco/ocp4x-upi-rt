@@ -22,8 +22,7 @@ bootloader --location=mbr --boot-drive=${RHEL_INSTALL_DEV} --append="rhgb quiet 
 ignoredisk --only-use=${RHEL_INSTALL_DEV}
 zerombr
 clearpart --all --initlabel
-# WARNING: cannot create a "swap" partition or Kubelet will fail to start
-#part / --fstype xfs --grow
+# WARNING: cannot have a "swap" partition or Kubelet will fail to start
 autopart --no-swap
 auth --passalgo=sha512 --useshadow
 selinux --enforcing

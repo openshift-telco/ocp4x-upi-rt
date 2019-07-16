@@ -110,7 +110,7 @@ enroll_and_install_node() {
     setsebool -P container_manage_cgroup on || true
 
     if [ -z "${RT_KERNEL}" ]; then
-        echo "Regular RHEL Node"
+        echo "Standard RHEL Node"
     else
         echo "RHEL-RT Node. Installing Real-Time Kernel..."
         # NOTE: Commenting becaue using local repo
@@ -122,6 +122,9 @@ enroll_and_install_node() {
 }
 
 set_rt_tuned_profile() {
+    # NOTE: Manual tuned customization on RHEL-RT nodes while Tuned operator adds support for bootloader plugin
+    # https://github.com/openshift/cluster-node-tuning-operator/issues/72
+
     cat <<EOL > /etc/tuned/realtime-variables.conf
 isolated_cores=${RT_TUNED_ISOLATE_CORES}
 hugepage_size_default=${RT_TUNED_HUGEPAGE_SIZE_DEFAULT}
