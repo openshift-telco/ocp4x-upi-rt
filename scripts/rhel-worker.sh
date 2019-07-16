@@ -99,8 +99,8 @@ enroll_and_install_node() {
     swapoff -a
     sed -i '/.*swap.*/d' /etc/fstab
 
-    # disable firewalld and nftables (required by OCP in RHEL8)
-    systemctl disable firewalld nftables
+    # maskin firewalld, iptables and nftables (required by OCP in RHEL8)
+    systemctl mask firewalld iptables nftables
 
     # enable ip forwarding
     sysctl -w net.ipv4.ip_forward=1
