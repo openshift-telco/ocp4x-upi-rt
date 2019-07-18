@@ -44,8 +44,8 @@ HTTP_PROXY=${WORKER_HTTP_PROXY}
 http_proxy=${WORKER_HTTP_PROXY}
 HTTPS_PROXY=${WORKER_HTTPS_PROXY}
 https_proxy=${WORKER_HTTPS_PROXY}
-NO_PROXY=.svc,.cluster.local,.${CLUSTER_NAME}.${BASE_DOMAIN},${CLUSTER_NETWORK},${SERVICE_NETWORK}
-no_proxy=.svc,.cluster.local,.${CLUSTER_NAME}.${BASE_DOMAIN},${CLUSTER_NETWORK},${SERVICE_NETWORK}
+NO_PROXY=.svc,.cluster.local,.${CLUSTER_NAME}.${BASE_DOMAIN},${CLUSTER_NETWORK},${SERVICE_NETWORK},${APPEND_NO_PROXY}
+no_proxy=.svc,.cluster.local,.${CLUSTER_NAME}.${BASE_DOMAIN},${CLUSTER_NETWORK},${SERVICE_NETWORK},${APPEND_NO_PROXY}
 EOF
 
     echo "Configure subscription-manager with PROXY configuration"

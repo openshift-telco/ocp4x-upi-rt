@@ -5,7 +5,7 @@ The purpose of this repo is to describe the addition of RHEL and RHEL-RT nodes t
 ## TL;DR
 1. Copy RHEL and RHEL-RT ISO content to web server
 2. Update TFTP Boot and PXE Config
-3. Update `./scripts/settings_up.env`
+3. Update `./scripts/settings_upi.env`
 4. `./generate_kickstart_rhel8.sh`
 5. `./upload.sh`
 6. Boot node and select PXE install
@@ -41,7 +41,7 @@ The purpose of this repo is to describe the addition of RHEL and RHEL-RT nodes t
     ```
     mkdir -pv /opt/nginx/html/rhel8rt
     mkdir /tmp/rhel8rt
-    mount -o loop,ro /root/rhel-8.0-x86_64-dvd-rt.iso /tmp/rhel8rt 
+    mount -o loop,ro /root/rhel-8.0-rt-x86_64-dvd.iso /tmp/rhel8rt 
     cp -a /tmp/rhel8rt/. /opt/nginx/html/rhel8rt/
     umount /tmp/rhel8rt
     chcon -R system_u:object_r:httpd_sys_content_t:s0 /opt/nginx/html/rhel8rt/
@@ -53,7 +53,7 @@ The purpose of this repo is to describe the addition of RHEL and RHEL-RT nodes t
 
     # NOTE: Some configurations may require updating 
     # permissions to allow access to the content
-    chmod -R 755 /opt/nginx/html/rhel8
+    chmod -R 755 /opt/nginx/html/rhel8rt
     ```
 
 - Prepare RHEL PXE boot environment
