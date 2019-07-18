@@ -3,13 +3,14 @@
 The purpose of this repo is to describe the addition of RHEL and RHEL-RT nodes to an existing OCP 4.x bare-metal cluster using PXE Boot and UPI mode.
 
 ## TL;DR
-1. Copy RHEL and RHEL-RT ISO content to web server
-2. Update TFTP Boot and PXE Config
-3. Update `./scripts/settings_up.env`
-4. `./generate_kickstart_rhel7.sh`
-5. `./upload.sh`
-6. Boot node and select PXE install
-7. Wait for ~20 mins for RHEL installation to complete. Approve CSR for SA. Approve CSR for Node.
+1. Generate a `worker-rt` MachineConfigPool with the corresponding MachineConfigs as per instructions at [openshift4x-poc/rhel-rt/rhel-rt-mc-and-mcp.md](https://github.com/openshift-telco/openshift4x-poc/blob/master/rhel-rt/rhel-rt-mc-and-mcp.md)
+2. Copy RHEL and RHEL-RT ISO content to web server
+3. Update TFTP Boot and PXE Config
+4. Update `./scripts/settings_up.env`
+5. `./generate_kickstart_rhel7.sh`
+6. `./upload.sh`
+7. Boot node and select PXE install
+8. Wait for ~20 mins for RHEL installation to complete. Approve CSR for SA. Approve CSR for Node.
    - `sleep 1200 ; ./approve-csr.sh ; sleep 20 ; ./approve-csr.sh`
 
 
