@@ -7,8 +7,8 @@ if [ -e /tmp/runonce ]; then
     # run release image
     echo "Running MCD"  > /root/runignition.log 2>&1
     oc version --config=/root/.kube/config >> root/runignition.log 2>&1
-    CLUSTER_VERSION=$(oc get clusterversion --config=/root/.kube/config --output=jsonpath='{.items[0].status.desired.image}')
 
+    CLUSTER_VERSION=$(oc get clusterversion --config=/root/.kube/config --output=jsonpath='{.items[0].status.desired.image}')
     podman pull --tls-verify=false --authfile /tmp/pull.json ${CLUSTER_VERSION}
     RELEASE_IMAGE=$(podman run --rm ${CLUSTER_VERSION} image machine-config-daemon)
 

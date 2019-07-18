@@ -143,6 +143,9 @@ EOL
 setup_ignition_service(){    
     set_kubeconfig
 
+    # Inject NM Workaround (required for OCP with multiple physical NICs)
+    sed -i "s|^ExecStart=.*|ExecStart=/usr/bin/nm-online -s -q --timeout=300|" /usr/lib/systemd/system/NetworkManager-wait-online.service
+
     cat <<EOL > /etc/systemd/system/runignition.service
 [Unit]
 Description=Run ignition commands
