@@ -256,7 +256,7 @@ add_sshkey_core
 sshd_hardening
 
 # Write pull secret
-printf ${PULL_SECRET} > /tmp/pull.json
+echo -n ${PULL_SECRET} > /tmp/pull.json
 
 # Pull ignition file into temporary file
 curl -k -J -L -s -o /tmp/bootstrap.ign ${IGNITION_URL}
