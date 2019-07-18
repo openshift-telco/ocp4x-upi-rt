@@ -93,7 +93,7 @@ enroll_and_install_node() {
     # NOTE: Not available for RHEL8: policycoreutils-python container-storage-setup ceph-common bridge-utils 
 
     # enable cri-o
-    systemctl enable cri-o
+    systemctl enable cri-o crio 
 
     # disable swap (required by Kubelet)
     swapoff -a
@@ -141,6 +141,8 @@ EOL
 }
 
 setup_ignition_service(){    
+    set_kubeconfig
+
     cat <<EOL > /etc/systemd/system/runignition.service
 [Unit]
 Description=Run ignition commands
@@ -266,7 +268,6 @@ curl -k -J -L -s -o /tmp/bootstrap.ign ${IGNITION_URL}
 enroll_and_install_node
 
 # Obtain Kubeconfig and setup Ignition Service
-set_kubeconfig
 setup_ignition_service
 
 ##############################################################
