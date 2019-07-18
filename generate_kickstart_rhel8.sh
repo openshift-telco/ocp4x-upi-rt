@@ -23,6 +23,7 @@ ignoredisk --only-use=${RHEL_INSTALL_DEV}
 zerombr
 clearpart --all --initlabel
 # WARNING: cannot have a "swap" partition or Kubelet will fail to start
+# Remove "home" partition to avoid wasting disk
 autopart --noswap --nohome
 auth --passalgo=sha512 --useshadow
 selinux --enforcing
