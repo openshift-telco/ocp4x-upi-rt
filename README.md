@@ -68,7 +68,7 @@ The purpose of this repo is to describe the addition of RHEL and RHEL-RT nodes t
     LABEL WORKER-RHEL
     MENU LABEL ^R RHEL WORKER (BIOS)
     KERNEL rhel8/vmlinuz
-    APPEND rd.neednet=1 initrd=rhel8/initrd.img console=tty0 ip=dhcp inst.ks=http://198.18.100.1:8000/ks/rhel8-worker-ks.cfg
+    APPEND rd.neednet=1 initrd=rhel8/initrd.img console=tty0 ip=dhcp inst.ks=http://198.18.100.1:8000/ks/rhel8-worker-ks.cfg inst.nokill
     ```
 
 - Configure [`settings_upi.env`](scripts/settings_upi.env-UPDATETHIS) to match the environment. This should exist as `./scripts/settings_up.env`
