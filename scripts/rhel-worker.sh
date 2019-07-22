@@ -117,6 +117,7 @@ enroll_and_install_node() {
         subscription-manager attach --pool=$RH_POOL_RT
         subscription-manager repos --enable=rhel-8-for-x86_64-rt-rpms
         yum groupinstall -y RT
+        yum -y install linuxptp
         set_rt_tuned_profile
     fi
 }
