@@ -76,14 +76,6 @@ enroll_and_install_node() {
     dnf update -y
 
     echo "Installing packages required for OCP"
-    # dnf -y install git wget kernel irqbalance microcode_ctl systemd selinux-policy-targeted \
-    # setools-console dracut-network passwd openssh-server openssh-clients podman skopeo runc \
-    # containernetworking-plugins nfs-utils NetworkManager dnsmasq lvm2 iscsi-initiator-utils \
-    # sg3_utils device-mapper-multipath xfsprogs e2fsprogs mdadm cryptsetup chrony logrotate \
-    # sssd shadow-utils sudo coreutils less tar xz gzip bzip2 rsync tmux nmap-ncat net-tools \
-    # bind-utils strace bash-completion vim-minimal nano authconfig iptables-services biosdevname \
-    # cloud-utils-growpart glusterfs-fuse cri-o cri-tools openshift-clients openshift-hyperkube
-
     # Updated to match playbook. Not including duplicate packages.
     # https://github.com/openshift/openshift-ansible/blob/release-4.1/roles/openshift_node/defaults/main.yml
     dnf -y install cri-o openshift-clients openshift-hyperkube  \
